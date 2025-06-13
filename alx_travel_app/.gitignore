@@ -1,0 +1,7 @@
+alx_travel_app/.idea
+listings/__pycache__/
+alx_travel_app/__pycache__/
+listings/migrations/__pycache__/
+__pycache__/
+.idea
+.env
