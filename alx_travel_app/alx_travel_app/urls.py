@@ -21,7 +21,6 @@ from drf_yasg import openapi
 from rest_framework import permissions
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from listings.views import ListingViewSet, BookingViewSet
 
 
 schema_view = get_schema_view(
@@ -37,15 +36,8 @@ schema_view = get_schema_view(
    permission_classes=[permissions.AllowAny],
 )
 
-router = DefaultRouter()
-router.register(r'listings', ListingViewSet)
-router.register(r'bookings', BookingViewSet)
-
-urlpatterns = [
-    path('api/', include(router.urls)),
-]
 
 urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('api/', include(router.urls)),
+    path('api/', include('listings.urls')),
 ]
