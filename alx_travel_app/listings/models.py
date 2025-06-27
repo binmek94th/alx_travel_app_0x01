@@ -38,3 +38,15 @@ class Booking(models.Model):
 
     class Meta:
         unique_together = ('listing', 'start_date', 'end_date')
+
+
+class Payment(models.model):
+    payment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    booking = models.ForeignKey(Booking, related_name='payments', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ], default='pending')
