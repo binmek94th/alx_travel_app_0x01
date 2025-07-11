@@ -144,3 +144,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env('EMAIL_PORT', default=587, cast=int)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_RATE_LIMIT_WINDOW = env('EMAIL_RATE_LIMIT_WINDOW', default=600, cast=int)
+EMAIL_RATE_LIMIT_MAX = env('EMAIL_RATE_LIMIT_MAX', default=10, cast=int)
