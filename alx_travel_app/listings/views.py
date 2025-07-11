@@ -5,6 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from tasks import send_email
 from .models import Listing, Booking, Payment
 from .serializers import ListingSerializer, BookingSerializer
 
@@ -21,6 +22,7 @@ class ListingViewSet(viewsets.ModelViewSet):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
 
+
 class BookingViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing Bookings.
@@ -33,6 +35,11 @@ class BookingViewSet(viewsets.ModelViewSet):
     """
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+        send_email([serializer.validated_data['customer_email']], "Booking Confirmation"
+                   , "Your booking has been successfully created.")
 
 
 class InitiatePaymentAPIView(APIView):
