@@ -1,0 +1,35 @@
+services:
+    app:
+        build: ..
+        ports:
+        - "8600:8600"
+        environment:
+        - DEBUG=False
+        - DB_NAME=alxtravelapp
+        - DB_HOST=localhost
+        - DB_PORT=3306
+        - DB_PASSWORD=1QAZ2wsx@
+        - DB_USER=root
+        - CHAPA_SECRET_KEY=CHASECK_TEST-zEsmDdWNz4r799ntOnjbPMmZOarYhA2G
+        volumes:
+        - ./app:/usr/src/app
+
+    db:
+        image: postgres:latest
+        environment:
+            POSTGRES_DB: alxtravelapp
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: 1QAZ2wsx@
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        ports:
+            - "15672:15672"
+            - "5672:5672"
