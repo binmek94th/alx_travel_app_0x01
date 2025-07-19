@@ -1,29 +1,38 @@
 services:
-    app:
-        build: ..
-        ports:
-        - "8600:8600"
-        environment:
-        - DEBUG=False
-        - DB_NAME=alxtravelapp
-        - DB_HOST=localhost
-        - DB_PORT=3306
-        - DB_PASSWORD=1QAZ2wsx@
-        - DB_USER=root
-        - CHAPA_SECRET_KEY=CHASECK_TEST-zEsmDdWNz4r799ntOnjbPMmZOarYhA2G
-        volumes:
-        - ./app:/usr/src/app
-
     db:
-        image: postgres:latest
+        image: mysql:latest
         environment:
-            POSTGRES_DB: alxtravelapp
-            POSTGRES_USER: root
-            POSTGRES_PASSWORD: 1QAZ2wsx@
+            MYSQL_DATABASE: alxtravelapp
+            MYSQL_ROOT_PASSWORD: 1QAZ2wsx@
         volumes:
-            - postgres_data:/var/lib/postgresql/data
+            - mysql_data:/var/lib/mysql
         ports:
-            - "5432:5432"
+            - "3336:3306"
+
+    app:
+        build: .
+        ports:
+            - "8600:8600"
+        environment:
+            - DEBUG=True
+            - DB_NAME=alxtravelapp
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_PASSWORD=1QAZ2wsx@
+            - DB_USER=root
+            - CHAPA_SECRET_KEY=CHASECK_TEST-zEsmDdWNz4r799ntOnjbPMmZOarYhA2G
+        command: >
+            bash -c "
+            sleep 30 
+            && python manage.py migrate 
+            && python manage.py collectstatic --noinput 
+            && gunicorn alx_travel_app.wsgi:application --bind 0.0.0.0:8600
+            "
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+            - rabbitmq
 
     rabbitmq:
         image: rabbitmq:3-management
@@ -33,3 +42,7 @@ services:
         ports:
             - "15672:15672"
             - "5672:5672"
+
+volumes:
+    mysql_data:
+        driver: local
