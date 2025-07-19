@@ -21,6 +21,8 @@ services:
       - DB_PORT=3306
       - DB_PASSWORD=1QAZ2wsx@
       - DB_USER=root
+      - EMAIL_HOST_USER='hackinglife959@gmail.com'
+      - EMAIL_HOST_PASSWORD='ujts ycif wgdl palv'
       - CHAPA_SECRET_KEY=CHASECK_TEST-zEsmDdWNz4r799ntOnjbPMmZOarYhA2G
     command: >
       bash -c "
