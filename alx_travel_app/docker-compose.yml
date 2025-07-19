@@ -14,6 +14,7 @@ services:
         ports:
             - "8600:8600"
         environment:
+            - CELERY_BROKER_URL=amqp://user:1qaz@rabbitmq:5672//
             - DEBUG=True
             - DB_NAME=alxtravelapp
             - DB_HOST=db
@@ -37,11 +38,28 @@ services:
     rabbitmq:
         image: rabbitmq:3-management
         environment:
-            RABBITMQ_DEFAULT_USER: guest
-            RABBITMQ_DEFAULT_PASS: guest
+            RABBITMQ_DEFAULT_USER: user
+            RABBITMQ_DEFAULT_PASS: 1qaz
         ports:
             - "15672:15672"
             - "5672:5672"
+
+    celery:
+        build: .
+        command: celery -A alx_travel_app worker --pool=solo -l info
+        environment:
+            - CELERY_BROKER_URL=amqp://user:1qaz@rabbitmq:5672//
+            - DEBUG=True
+            - DB_NAME=alxtravelapp
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_PASSWORD=1QAZ2wsx@
+            - DB_USER=root
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+            - rabbitmq
 
 volumes:
     mysql_data:

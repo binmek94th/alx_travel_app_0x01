@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', str)
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
