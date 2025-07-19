@@ -23,7 +23,7 @@ services:
       - DB_PASSWORD=1QAZ2wsx@
       - DB_USER=root
       - EMAIL_HOST_USER='hackinglife959@gmail.com'
-      - EMAIL_HOST_PASSWORD='ujts ycif wgdl palv'
+      - EMAIL_HOST_PASSWORD='dccy gwnn zmlu qcgi'
       - CHAPA_SECRET_KEY=CHASECK_TEST-zEsmDdWNz4r799ntOnjbPMmZOarYhA2G
     command: >
       bash -c "
@@ -61,7 +61,7 @@ services:
       - DB_PASSWORD=1QAZ2wsx@
       - DB_USER=root
       - EMAIL_HOST_USER='hackinglife959@gmail.com'
-      - EMAIL_HOST_PASSWORD='ujts ycif wgdl palv'
+      - EMAIL_HOST_PASSWORD='dccy gwnn zmlu qcgi'
     volumes:
       - .:/app
     depends_on:
