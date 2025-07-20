@@ -2,10 +2,13 @@ import os
 
 import requests
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+
 from .models import Listing, Booking, Payment
-from .serializers import ListingSerializer, BookingSerializer
+from .serializers import ListingSerializer, BookingSerializer, PaymentSerializer
 from listings.tasks import send_email
 
 
@@ -45,24 +48,26 @@ class BookingViewSet(viewsets.ModelViewSet):
                          'Your booking has been created successfully.')
 
 
-class InitiatePaymentAPIView(APIView):
-    def post(self, request):
+class PaymentViewSet(ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+    def perform_create(self, serializer):
         chapa_secret_key = os.getenv('CHAPA_SECRET_KEY')
         if not chapa_secret_key:
             return Response({"error": "Chapa secret key not configured."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        booking_reference = request.data.get("booking_reference")
-        amount = request.data.get("amount")
-        customer_email = request.data.get("email")
+        booking_reference = serializer.data['booking']
+        booking = Booking.objects.get(booking_id=booking_reference)
 
-        if not booking_reference or not amount or not customer_email:
+        if not booking_reference:
             return Response({"error": "Missing required payment data."}, status=status.HTTP_400_BAD_REQUEST)
 
         payload = {
-            "amount": amount,
+            "amount": str(booking.total_price),
             "currency": "ETB",
-            "email": customer_email,
-            "tx_ref": booking_reference,
+            "email": booking.customer_email,
+            "tx_ref": str(booking_reference),
             "callback_url": "https://yourdomain.com/api/payments/verify/",
             "return_url": "https://yourdomain.com/payment-success/",
         }
@@ -76,21 +81,20 @@ class InitiatePaymentAPIView(APIView):
 
         if response.status_code == 200:
             data = response.json()
-            payment, created = Payment.objects.get_or_create(
-                booking_reference=booking_reference,
+            Payment.objects.get_or_create(
+                booking=booking,
                 defaults={
-                    "amount": amount,
+                    "amount": booking.total_price,
                     "status": "Pending",
                     "transaction_id": data.get("data", {}).get("id")
                 }
             )
             return Response({"payment_url": data.get("data", {}).get("checkout_url")})
 
-        return Response({"error": "Failed to initialize payment."}, status=status.HTTP_400_BAD_REQUEST)
+        raise ValidationError({"error": "Failed to initialize payment."})
 
-
-class VerifyPaymentAPIView(APIView):
-    def get(self, request):
+    @action(detail=True, methods=['get'], url_path='verify_email')
+    def verify_payment(self, request, *args, **kwargs):
         chapa_secret_key = os.getenv('CHAPA_SECRET_KEY')
         tx_ref = request.query_params.get('tx_ref')
         transaction_id = request.query_params.get('transaction_id')

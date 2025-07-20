@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from listings.models import Listing, Review, Booking
+from listings.models import Listing, Review, Booking, Payment
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -37,3 +37,10 @@ class BookingSerializer(serializers.ModelSerializer):
         validated_data['total_price'] = total_price
 
         return super().create(validated_data)
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = '__all__'
+        read_only_fields = ['amount', 'payment_date', 'status', 'transaction_id']
