@@ -5,5 +5,8 @@ celery
 rabbitmq
 drf-yasg
 django-environ
+faker
 psycopg2-binary
 requests
+celery
+gunicorn

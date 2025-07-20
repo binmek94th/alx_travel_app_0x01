@@ -21,7 +21,7 @@ def send_email(recipient_list, subject, message_plain):
             text_part = MIMEText(message_plain, "plain")
             email_msg.attach(text_part)
 
-            server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
+            server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
             server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
             server.sendmail(EMAIL_HOST_USER, recipient, email_msg.as_string())

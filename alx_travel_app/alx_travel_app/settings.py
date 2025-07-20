@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'alx_travel_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env('DB_NAME'),
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
@@ -128,9 +128,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+    
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -149,10 +151,11 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL', str)
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = env('EMAIL_PORT', default=587, cast=int)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_RATE_LIMIT_WINDOW = env('EMAIL_RATE_LIMIT_WINDOW', default=600, cast=int)
 EMAIL_RATE_LIMIT_MAX = env('EMAIL_RATE_LIMIT_MAX', default=10, cast=int)
+EMAIL_USE_TLS = True

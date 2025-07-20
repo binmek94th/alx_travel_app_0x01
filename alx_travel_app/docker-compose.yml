@@ -1,13 +1,14 @@
 services:
   db:
-    image: mysql:latest
+    image: postgres:14
     environment:
-      MYSQL_DATABASE: alxtravelapp
-      MYSQL_ROOT_PASSWORD: 1QAZ2wsx@
+      POSTGRES_DB: alxtravelapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1qaz2wsx
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "3336:3306"
+      - "5442:5432"
     mem_limit: 512m
 
   app:
@@ -19,11 +20,11 @@ services:
       - DEBUG=True
       - DB_NAME=alxtravelapp
       - DB_HOST=db
-      - DB_PORT=3306
-      - DB_PASSWORD=1QAZ2wsx@
-      - DB_USER=root
+      - DB_PORT=5432
+      - DB_PASSWORD=1qaz2wsx
+      - DB_USER=postgres
       - EMAIL_HOST_USER='hackinglife959@gmail.com'
-      - EMAIL_HOST_PASSWORD='dccy gwnn zmlu qcgi'
+      - EMAIL_HOST_PASSWORD='dccygwnnzmluqcgi'
       - CHAPA_SECRET_KEY=CHASECK_TEST-zEsmDdWNz4r799ntOnjbPMmZOarYhA2G
     command: >
       bash -c "
@@ -57,11 +58,11 @@ services:
       - DEBUG=True
       - DB_NAME=alxtravelapp
       - DB_HOST=db
-      - DB_PORT=3306
-      - DB_PASSWORD=1QAZ2wsx@
-      - DB_USER=root
+      - DB_PORT=5436
+      - DB_PASSWORD=1qaz2wsx
+      - DB_USER=postgres
       - EMAIL_HOST_USER='hackinglife959@gmail.com'
-      - EMAIL_HOST_PASSWORD='dccy gwnn zmlu qcgi'
+      - EMAIL_HOST_PASSWORD='dccygwnnzmluqcgi'
     volumes:
       - .:/app
     depends_on:
@@ -78,7 +79,7 @@ services:
       - app
 
 volumes:
-  mysql_data:
+  postgres_data:
     driver: local
   static_volume:
     driver: local
